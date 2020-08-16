@@ -3,8 +3,6 @@ import { Config } from './config';
 import { GifList } from '../domain/gif-list';
 
 export class GiphyRepository {
-  private readonly url = 'https://api.giphy.com/v1/gifs/search';
-
   constructor(private config: Config = new Config()) {}
 
   async searchByKeyword(keyword: string): Promise<GifList> {
@@ -20,6 +18,6 @@ export class GiphyRepository {
   }
 
   private buildUrl(keyword): string {
-    return `${this.url}?api_key=${this.config.apiKey}&q=${keyword}`;
+    return `${this.config.url}?api_key=${this.config.apiKey}&q=${keyword}`;
   }
 }

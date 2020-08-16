@@ -14,6 +14,7 @@ describe('GipnyRepository', () => {
   beforeAll(() => {
     repository = new GiphyRepository(config);
     jest.spyOn(config, 'apiKey', 'get').mockReturnValue('my_api_key');
+    jest.spyOn(config, 'url', 'get').mockReturnValue('http://localhost/search');
   });
 
   beforeEach(() => {
@@ -28,7 +29,7 @@ describe('GipnyRepository', () => {
         "https://giphy.com/gifs/boxing-coach-knowledge-GWjUw6yjJcGME",
         "https://giphy.com/gifs/miguelcotto-boxing-miguel-cotto-3oEduSLalG3rotykI8"
       ];
-      let fetchResponse = {
+      const fetchResponse = {
         status: 200,
         ok: true,
         json: jest.fn().mockResolvedValue(searchResponse)
@@ -38,11 +39,22 @@ describe('GipnyRepository', () => {
 
       await expect(repository.searchByKeyword(keyword)).resolves.toEqual(gifList);
 
-      expect(mockFetch).toBeCalledWith('https://api.giphy.com/v1/gifs/search?api_key=my_api_key&q=keyword');
+      expect(mockFetch).toBeCalledWith('http://localhost/search?api_key=my_api_key&q=keyword');
     });
 
     describe('when fetches fails', () => {
-      it('raises Error', async () => {});
+      it('raises Error', async () => {
+        const keyword = 'keyword';
+        const fetchResponse = {
+          status: 500,
+          ok: false,
+          json: jest.fn().mockResolvedValue({})
+        };
+
+        mockFetch.mockResolvedValue(fetchResponse);
+
+        await expect(repository.searchByKeyword(keyword)).rejects.toThrow(Error);
+      });
     });
   });
 });
