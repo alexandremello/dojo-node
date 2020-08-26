@@ -1,8 +1,6 @@
 import * as express from 'express';
+import { gifController } from './controller/gif-controller';
 
 export const routes = express.Router();
 
-routes.get('/', (_req, res) => {
-    res.send('Hello world!');
-});
-
+routes.get('/gifs', gifController);
